@@ -4,7 +4,7 @@ body {
   line-height: 1;
 }
 
-textarea{
+textarea {
   background: transparent;
   border: none;
   resize: none;
@@ -26,15 +26,15 @@ textarea{
   text-align: center;
 }
 
-.description{
+nav {
+  margin-top: 30px;
+}
+
+.description {
   white-space: pre-wrap;
 }
 
-#currentDay {
-  padding-top: 2rem;
-}
-
-.time-block{
+.time-block {
   text-align: center;
   border-radius: 15px;
   border: 1px solid blue;
@@ -45,7 +45,8 @@ textarea{
 .row {
   white-space: pre-wrap;
   height: 80px;
-  border-top: 1px solid white;;
+  border-top: 1px solid white;
+  ;
 }
 
 .hour {
@@ -80,4 +81,17 @@ textarea{
 .saveBtn i:hover {
   font-size: 20px;
   transition: all .3s ease-in-out;
+}
+
+#date {
+  width: 150px;
+}
+
+ul li:nth-child(2) p {
+  padding: 0 12px;
+}
+
+ul {
+  justify-content: center;
+  ;
 }

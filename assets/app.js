@@ -1,19 +1,27 @@
 const date = new Date();
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-$('#currentDay').html(daysOfWeek[date.getDay()]);
-let startTime = 6;
-let storedData = JSON.parse(localStorage.getItem('storedData')) || Array.from(new Array(11), s => {
-  startTime++;
-  return {
-    time: startTime,
-    todo: ''
-  }
-});
+let currentDay = date.getDay();
+$('#currentDay').html(daysOfWeek[currentDay]);
 
-const printSlots = () => {
+const storedObj = {};
+for (day in daysOfWeek) {
+  let startTime = 6;
+  storedObj[daysOfWeek[day]] = Array.from(new Array(11), s => {
+    startTime++;
+    return {
+      time: startTime,
+      todo: ''
+    }
+  })
+};
+console.log(storedObj);
+
+const storedData = JSON.parse(localStorage.getItem('storedData')) || storedObj;
+
+const printSlots = (currentDay) => {
   $('.container').empty();
-  storedData.forEach(currentItem => {
+  storedData[daysOfWeek[currentDay]].forEach(currentItem => {
     let inputGroup = $('<div class="input-group mb-3"></div>');
     inputGroup.attr('style', `opacity: ${date.getHours() >= currentItem.time ? 0.3 : 1.0}`);
 
@@ -44,14 +52,14 @@ const printSlots = () => {
   });
 }
 
-printSlots();
+printSlots(currentDay);
 
-$('input[type=checkbox]').click(event => {
+$('.container').on('click', 'input[type=checkbox]', (event => {
   console.log(event);
   if (event.target.checked) {
     const inputText = event.target.parentNode.parentNode.parentNode.children[1].value;
     const timeInput = event.target.parentNode.parentNode.parentNode.children[0].children[0].getAttribute('data-time');
-    storedData = Array.from(storedData, s => {
+    storedData[daysOfWeek[currentDay]] = Array.from(storedData[daysOfWeek[currentDay]], s => {
       if (
         s.time === parseInt(timeInput)
       )
@@ -63,4 +71,20 @@ $('input[type=checkbox]').click(event => {
     });
     localStorage.setItem('storedData', JSON.stringify(storedData));
   };
+}));
+
+$('#left').click(event => {
+  if (currentDay != 0) {
+    currentDay--;
+    $('#currentDay').html(daysOfWeek[currentDay]);
+    printSlots(currentDay);
+  }
+});
+
+$('#right').click(event => {
+  if (currentDay < daysOfWeek.length - 1) {
+    currentDay++;
+    $('#currentDay').html(daysOfWeek[currentDay]);
+    printSlots(currentDay);
+  }
 });
