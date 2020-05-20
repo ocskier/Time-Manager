@@ -27,7 +27,7 @@ textarea {
 }
 
 nav {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .description {
@@ -85,6 +85,10 @@ nav {
 
 #date {
   width: 150px;
+}
+
+#currentTime {
+  margin-top: 30px;
 }
 
 ul li:nth-child(2) p {

@@ -2,6 +2,9 @@ const date = new Date();
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 let currentDay = date.getDay();
+let interval;
+
+$('#currentTime').html(`${date.getHours() <= 12 ? date.getHours() : date.getHours() - 12}:${date.getMinutes()} ${date.getHours() < 12 ? "AM" : 'PM'}`);
 $('#currentDay').html(daysOfWeek[currentDay]);
 
 const storedObj = {};
@@ -88,3 +91,5 @@ $('#right').click(event => {
     printSlots(currentDay);
   }
 });
+
+interval = setInterval(()=>location.reload(),60*1000)
