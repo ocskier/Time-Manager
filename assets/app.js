@@ -4,27 +4,31 @@ const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
 let currentDay = date.getDay();
 let interval;
 
-$('#currentTime').html(`${date.getHours() <= 12 ? date.getHours() : date.getHours() - 12}:${date.getMinutes()} ${date.getHours() < 12 ? "AM" : 'PM'}`);
+$('#currentTime').html(
+  `${date.getHours() <= 12 ? date.getHours() : date.getHours() - 12}:${
+    date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+  } ${date.getHours() < 12 ? 'AM' : 'PM'}`,
+);
 $('#currentDay').html(daysOfWeek[currentDay]);
 
 const storedObj = {};
 for (day in daysOfWeek) {
   let startTime = 6;
-  storedObj[daysOfWeek[day]] = Array.from(new Array(11), s => {
+  storedObj[daysOfWeek[day]] = Array.from(new Array(11), (s) => {
     startTime++;
     return {
       time: startTime,
-      todo: ''
-    }
-  })
-};
+      todo: '',
+    };
+  });
+}
 console.log(storedObj);
 
 const storedData = JSON.parse(localStorage.getItem('storedData')) || storedObj;
 
 const printSlots = (currentDay) => {
   $('.container').empty();
-  storedData[daysOfWeek[currentDay]].forEach(currentItem => {
+  storedData[daysOfWeek[currentDay]].forEach((currentItem) => {
     let inputGroup = $('<div class="input-group mb-3"></div>');
     inputGroup.attr('style', `opacity: ${date.getHours() >= currentItem.time ? 0.3 : 1.0}`);
 
@@ -33,10 +37,16 @@ const printSlots = (currentDay) => {
     inputSpan1.attr('id', 'inputGroup-sizing-default');
     inputSpan1.attr('style', 'width: 100px');
     inputSpan1.attr('data-time', currentItem.time);
-    inputSpan1.html(`${currentItem.time < 13 ? currentItem.time : currentItem.time -12}:00 ${currentItem.time < 12 ? 'am' : 'pm'}`)
+    inputSpan1.html(
+      `${currentItem.time < 13 ? currentItem.time : currentItem.time - 12}:00 ${currentItem.time < 12 ? 'am' : 'pm'}`,
+    );
     inputPrepend.append(inputSpan1);
 
-    let input = $(`<input type="text" style="text-align: center;" class="form-control" ${date.getHours() >= currentItem.time ? "disabled" : null}></input>`);
+    let input = $(
+      `<input type="text" style="text-align: center;" class="form-control" ${
+        date.getHours() >= currentItem.time ? 'disabled' : null
+      }></input>`,
+    );
     input.val(currentItem.todo);
     input.attr('aria-label', 'Sizing example input');
     input.attr('aria-describedby', 'inputGroup-sizing-default');
@@ -45,7 +55,7 @@ const printSlots = (currentDay) => {
     let inputTxt = $('<div class="input-group-text"></div>');
     let inputSpan2 = $('<span></span>').attr('style', 'margin-right: 8px');
     inputSpan2.text('Save?');
-    let inputCheckbox = $(`<input type="checkbox" ${date.getHours() >= currentItem.time ? "disabled" : null}></input>`);
+    let inputCheckbox = $(`<input type="checkbox" ${date.getHours() >= currentItem.time ? 'disabled' : null}></input>`);
     inputCheckbox.attr('aria-label', 'Checkbox for following text input');
     inputTxt.append(inputSpan2, inputCheckbox);
     inputAppend.append(inputTxt);
@@ -53,30 +63,28 @@ const printSlots = (currentDay) => {
     inputGroup.append(inputPrepend, input, inputAppend);
     $('.container').append(inputGroup);
   });
-}
+};
 
 printSlots(currentDay);
 
-$('.container').on('click', 'input[type=checkbox]', (event => {
+$('.container').on('click', 'input[type=checkbox]', (event) => {
   console.log(event);
   if (event.target.checked) {
     const inputText = event.target.parentNode.parentNode.parentNode.children[1].value;
     const timeInput = event.target.parentNode.parentNode.parentNode.children[0].children[0].getAttribute('data-time');
-    storedData[daysOfWeek[currentDay]] = Array.from(storedData[daysOfWeek[currentDay]], s => {
-      if (
-        s.time === parseInt(timeInput)
-      )
+    storedData[daysOfWeek[currentDay]] = Array.from(storedData[daysOfWeek[currentDay]], (s) => {
+      if (s.time === parseInt(timeInput))
         return {
           time: s.time,
-          todo: inputText
-        }
-      else return s
+          todo: inputText,
+        };
+      else return s;
     });
     localStorage.setItem('storedData', JSON.stringify(storedData));
-  };
-}));
+  }
+});
 
-$('#left').click(event => {
+$('#left').click((event) => {
   if (currentDay != 0) {
     currentDay--;
     $('#currentDay').html(daysOfWeek[currentDay]);
@@ -84,7 +92,7 @@ $('#left').click(event => {
   }
 });
 
-$('#right').click(event => {
+$('#right').click((event) => {
   if (currentDay < daysOfWeek.length - 1) {
     currentDay++;
     $('#currentDay').html(daysOfWeek[currentDay]);
@@ -92,4 +100,4 @@ $('#right').click(event => {
   }
 });
 
-interval = setInterval(()=>location.reload(),60*1000)
+interval = setInterval(() => location.reload(), 60 * 1000);
