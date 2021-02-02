@@ -2,7 +2,7 @@ const date = new Date();
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 let currentDay = date.getDay();
-let interval;
+let interval = setInterval(() => location.reload(), 60 * 1000);
 
 $('#currentTime').html(
   `${date.getHours() <= 12 ? date.getHours() : date.getHours() - 12}:${
@@ -22,15 +22,21 @@ for (day in daysOfWeek) {
     };
   });
 }
-console.log(storedObj);
 
 const storedData = JSON.parse(localStorage.getItem('storedData')) || storedObj;
+console.log(storedObj);
 
 const printSlots = (currentDay) => {
   $('.container').empty();
   storedData[daysOfWeek[currentDay]].forEach((currentItem) => {
     let inputGroup = $('<div class="input-group mb-3"></div>');
-    inputGroup.attr('style', `opacity: ${date.getHours() >= currentItem.time ? 0.3 : 1.0}`);
+    inputGroup.attr(
+      "style",
+      `opacity: ${
+        currentDay < date.getDay() ? 0.3 : (currentDay === date.getDay() && date.getHours() > currentItem.time)
+          ? 0.3 : 1.0 
+      }`
+    );
 
     let inputPrepend = $('<div class="input-group-prepend">');
     let inputSpan1 = $('<span class=input-group-text></span>');
@@ -44,8 +50,12 @@ const printSlots = (currentDay) => {
 
     let input = $(
       `<input type="text" style="text-align: center;" class="form-control" ${
-        date.getHours() >= currentItem.time ? 'disabled' : null
-      }></input>`,
+        currentDay < date.getDay()
+          ? 'disabled'
+          : currentDay === date.getDay() && date.getHours() > currentItem.time
+          ? 'disabled'
+          : null
+      }></input>`
     );
     input.val(currentItem.todo);
     input.attr('aria-label', 'Sizing example input');
@@ -55,7 +65,15 @@ const printSlots = (currentDay) => {
     let inputTxt = $('<div class="input-group-text"></div>');
     let inputSpan2 = $('<span></span>').attr('style', 'margin-right: 8px');
     inputSpan2.text('Save?');
-    let inputCheckbox = $(`<input type="checkbox" ${date.getHours() >= currentItem.time ? 'disabled' : null}></input>`);
+    let inputCheckbox = $(
+      `<input type="checkbox" ${
+        currentDay < date.getDay()
+          ? "disabled"
+          : currentDay === date.getDay() && date.getHours() > currentItem.time
+          ? "disabled"
+          : null
+      }></input>`
+    );
     inputCheckbox.attr('aria-label', 'Checkbox for following text input');
     inputTxt.append(inputSpan2, inputCheckbox);
     inputAppend.append(inputTxt);
@@ -68,7 +86,6 @@ const printSlots = (currentDay) => {
 printSlots(currentDay);
 
 $('.container').on('click', 'input[type=checkbox]', (event) => {
-  console.log(event);
   if (event.target.checked) {
     const inputText = event.target.parentNode.parentNode.parentNode.children[1].value;
     const timeInput = event.target.parentNode.parentNode.parentNode.children[0].children[0].getAttribute('data-time');
@@ -100,4 +117,3 @@ $('#right').click((event) => {
   }
 });
 
-interval = setInterval(() => location.reload(), 60 * 1000);
